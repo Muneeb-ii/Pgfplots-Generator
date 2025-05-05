@@ -131,17 +131,17 @@ def generate_pgfplots_equation(expr, x_domain) -> str:
     raw = raw.replace('log(', 'ln(')
     return (
         PREAMBLE + "\n"
-        "\\begin{tikzpicture}\n"
-        "  \\begin{axis}[\n"
-        "    axis lines=middle,\n"
-        "    xlabel={$x$}, ylabel={$y$},\n"
-        f"    domain={xmin}:{xmax}, samples=200,\n"
-        "    enlargelimits=true,\n"
-        "    grid=major\n"
-        "  ]\n"
-        f"    \\addplot [smooth, thick] {{ {raw} }};\n"
-        "  \\end{axis}\n"
-        "\\end{tikzpicture}"
+        "\\begin{tikzpicture}  % start TikZ environment\n"
+        "  \\begin{axis}[  % configure axis settings\n"
+        f"    domain={xmin}:{xmax}, samples=200,  % set domain & sampling\n"
+        "     axis lines=middle,  % draw axes through origin\n"
+        "     xlabel={$x$}, ylabel={$y$},  % label axes\n"
+        "     grid=major,  % add major grid lines\n"
+        "     enlargelimits=true  % add padding around plot\n"
+        "   ]\n"
+        f"    \\addplot [smooth, thick] {{ {raw} }};  % draw the curve\n"
+        "  \\end{axis}  % end axis environment\n"
+        "\\end{tikzpicture}  % end TikZ environment\n"
     )
 
 def generate_tikz_coordinates(points) -> str:
@@ -158,15 +158,15 @@ def generate_tikz_coordinates(points) -> str:
     coords_str = " ".join(f"({x},{y})" for x, y in points)
     return (
         PREAMBLE + "\n"
-        "\\begin{tikzpicture}\n"
-        "  \\begin{axis}[\n"
-        "    axis lines=middle,\n"
-        "    grid=major,\n"
-        "    enlargelimits=true\n"
+        "\\begin{tikzpicture}  % start TikZ environment\n"
+        "  \\begin{axis}[  % configure axis for coordinate plot\n"
+        "    axis lines=middle,  % draw axes through origin\n"
+        "    grid=major,  % add grid\n"
+        "    enlargelimits=true  % add padding around plot\n"
         "  ]\n"
-        f"    \\addplot [thick] coordinates {{{coords_str}}};\n"
-        "  \\end{axis}\n"
-        "\\end{tikzpicture}"
+        f"    \\addplot [thick] coordinates {{{coords_str}}};  % plot given coordinates\n"
+        "  \\end{axis}  % end axis environment\n"
+        "\\end{tikzpicture}  % end TikZ environment\n"
     )
 
 def main():
