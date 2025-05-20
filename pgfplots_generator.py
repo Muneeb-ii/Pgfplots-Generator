@@ -2,7 +2,7 @@
 pgfplots_generator.py
 
 Author:            Muneeb Azfar Nafees
-Last Updated:      05-May-2024
+Last Updated:      20-May-2025
 Description:       This script generates TikZ/PGFPlots code for plotting mathematical functions or coordinates.
 Licensed under Apache-2.0 (see LICENSE file for details).
 """
@@ -99,6 +99,16 @@ def prompt_labels() -> tuple[str, str]:
     # default labels
     return "$x$", "$y$"
 
+def prompt_color() -> str:
+    """ Prompt the user for a color name for the plot.
+    The default color is "black". The user can enter a custom color.
+
+    Returns:
+        str: The color name for the plot.
+    """
+    color = input("Enter plot color (LaTeX name, e.g. red, blue; default 'black'): ").strip()
+    return color or "black"
+
 def prompt_coordinates() -> list:
     """ Prompt the user for a list of coordinates in the format x,y; x,y; ...
     The coordinates are parsed and returned as a list of tuples.
@@ -125,7 +135,7 @@ def prompt_coordinates() -> list:
         except Exception:
             print("Invalid format. Please follow x,y; x,y; ...")
 
-def generate_pgfplots_equation(expr, x_domain: tuple, x_label: str, y_label: str) -> str:
+def generate_pgfplots_equation(expr, x_domain, x_label: str, y_label: str, color: str) -> str:
     """ Generate TikZ/PGFPlots code for a given equation.
     The equation is converted to a string format suitable for PGFPlots.
 
@@ -134,6 +144,7 @@ def generate_pgfplots_equation(expr, x_domain: tuple, x_label: str, y_label: str
         x_domain (tuple): The domain for x as a tuple (xmin, xmax).
         x_label (str): Label for the x-axis.
         y_label (str): Label for the y-axis.
+        color (str): Color name for the plot.
 
     Returns:
         (str): The TikZ/PGFPlots code for the equation.
@@ -157,12 +168,12 @@ def generate_pgfplots_equation(expr, x_domain: tuple, x_label: str, y_label: str
         "     grid=major,  % add major grid lines\n"
         "     enlargelimits=true  % add padding around plot\n"
         "   ]\n"
-        f"    \\addplot [smooth, thick] {{ {raw} }};  % draw the curve\n"
+        f"    \\addplot [smooth, thick, color={color}] {{ {raw} }};  % draw the curve (change 'color' option to any valid LaTeX color name)\n"
         "  \\end{axis}  % end axis environment\n"
         "\\end{tikzpicture}  % end TikZ environment\n"
     )
 
-def generate_tikz_coordinates(points: list, x_label: str, y_label: str) -> str:
+def generate_tikz_coordinates(points: list, x_label: str, y_label: str, color: str) -> str:
     """ Generate TikZ code for a list of coordinates.
     The coordinates are formatted as a string suitable for PGFPlots.
 
@@ -170,6 +181,7 @@ def generate_tikz_coordinates(points: list, x_label: str, y_label: str) -> str:
         points (list): A list of tuples containing the coordinates.
         x_label (str): Label for the x-axis.
         y_label (str): Label for the y-axis.
+        color (str): Color name for the plot.
 
     Returns:
         (str): The TikZ code for the coordinates.
@@ -185,7 +197,7 @@ def generate_tikz_coordinates(points: list, x_label: str, y_label: str) -> str:
         f"    xlabel={{{x_label}}}, ylabel={{{y_label}}},  % label axes\n"
         "    enlargelimits=true  % add padding around plot\n"
         "  ]\n"
-        f"    \\addplot [thick] coordinates {{{coords_str}}};  % plot given coordinates\n"
+        f"    \\addplot [thick, color={color}] coordinates {{{coords_str}}};  % plot given coordinates (change 'color' to desired color)\n"
         "  \\end{axis}  % end axis environment\n"
         "\\end{tikzpicture}  % end TikZ environment\n"
     )
@@ -199,11 +211,13 @@ def main():
         expr = prompt_equation()
         x_domain = prompt_domain()
         x_label, y_label = prompt_labels()
-        tikz_code = generate_pgfplots_equation(expr, x_domain, x_label, y_label)
+        color = prompt_color()
+        tikz_code = generate_pgfplots_equation(expr, x_domain, x_label, y_label, color)
     else:
         points = prompt_coordinates()
         x_label, y_label = prompt_labels()
-        tikz_code = generate_tikz_coordinates(points, x_label, y_label)
+        color = prompt_color()
+        tikz_code = generate_tikz_coordinates(points, x_label, y_label, color)
 
     print("\nCopy the following TikZ/PGFPlots code:\n")
     print(tikz_code)
