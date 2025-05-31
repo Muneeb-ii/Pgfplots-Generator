@@ -28,7 +28,7 @@ The generated code can be directly used in LaTeX documents with the TikZ and PGF
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/Pgfplots-Generator.git
+git clone https://github.com/Muneeb-ii/Pgfplots-Generator.git
 cd Pgfplots-Generator
 ```
 
