@@ -1,2 +1,2 @@
 # This file is used to install the required packages for the project.
-sympy>=1.11.1
+sympy>=1.12
